@@ -1,7 +1,7 @@
 # untar
 
 Minimalistic libtar-based library that can extract tar archives from
-file on disk or from a memory buffer.
+a file on disk or from a memory buffer.
 
 ## Installation
 
@@ -72,6 +72,12 @@ puts changelog
 
 ### Error handling
 
+The approach is simple: if something went wrong during execution, an
+error object is returned. For a side-effect-only `Untar.extract`
+method successful call results in a `nil` value. `Untar.extract_file`
+returns an extracted file as an `IO` object when no errors occured.
+
+Error object can be stringified for more details on what happened.
 
 ## Contributing
 
