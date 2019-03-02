@@ -74,10 +74,10 @@ puts changelog
 
 The approach is simple: if something went wrong during execution, an
 error object is returned. For a side-effect-only `Untar.extract`
-method successful call results in a `nil` value. `Untar.extract_file`
+method, successful call results in a `nil` value. `Untar.extract_file`
 returns an extracted file as an `IO` object when no errors occured.
 
-Error object can be stringified for more details on what happened.
+Error object can be stringified for more details on what has happened.
 
 ## Contributing
 
