@@ -1,5 +1,7 @@
 # untar
 
+[![Travis CI Build Status](https://travis-ci.org/vivus-ignis/crystal-untar.svg)](https://travis-ci.org/vivus-ignis/crystal-untar)
+
 Minimalistic libtar-based library that can extract tar archives from
 a file on disk or from a memory buffer.
 
