@@ -1,23 +1,5 @@
-require "uuid"
 require "file_utils"
-require "./untar/tar.cr"
-
-class Dir
-
-  def self.tempdir(prefix : String, &block)
-    random_name = "#{prefix}.#{UUID.random.to_s.split("-").last}"
-    tempdir = File.join(Dir.tempdir, random_name)
-
-    Dir.mkdir tempdir
-
-    begin
-      yield tempdir
-    ensure
-      FileUtils.rm_rf tempdir
-    end
-  end
-
-end
+require "./lib_tar/lib_tar"
 
 module Untar
 
@@ -29,6 +11,18 @@ module Untar
 
     def to_s(io)
       io.print message
+    end
+  end
+
+  def mktemp_d(prefix : String, &block)
+    tempdir = File.tempname(prefix)
+
+    Dir.mkdir tempdir
+
+    begin
+      yield tempdir
+    ensure
+      FileUtils.rm_rf tempdir
     end
   end
 
@@ -49,7 +43,7 @@ module Untar
   end
 
   def extract(from_memory : IO::Memory, to_directory : String) : Untar::Error | Nil
-    Dir.tempdir("untar") do |tmpd|
+    mktemp_d("untar") do |tmpd|
       tarball = File.tempfile(prefix: "untar", suffix: ".tar", dir: tmpd)
       tarball.puts from_memory
       extract(tarball.path, to_directory)
@@ -59,7 +53,7 @@ module Untar
   end
 
   def extract_file(from_memory : IO::Memory, file_path : String) : IO | Untar::Error
-    Dir.tempdir("untar") do |tmpd|
+    mktemp_d("untar") do |tmpd|
       tarball = File.tempfile(prefix: "untar", suffix: ".tar", dir: tmpd)
       tarball.puts from_memory
 
