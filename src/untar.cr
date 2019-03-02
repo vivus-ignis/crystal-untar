@@ -26,6 +26,10 @@ module Untar
   struct Error
     property message : String
     def initialize(@message); end
+
+    def to_s(io)
+      io.print message
+    end
   end
 
   def extract(from_file : String, to_directory : String) : Untar::Error | Nil
