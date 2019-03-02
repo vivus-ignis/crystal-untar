@@ -1,3 +1,3 @@
 language: crystal
 before_install:
-  - sudo apt-get install -y libtar0
+  - sudo apt-get install -y libtar-dev
