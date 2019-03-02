@@ -12,7 +12,7 @@ docker:
 	docker build -t untar .
 
 run: docker untar
-	docker run -ti -v $(CURDIR):/src -w /src --privileged untar ./untar
+	docker run -ti -v $(CURDIR):/src -w /src untar ./untar
 
 run-gdb: docker untar
 	docker run -ti -v $(CURDIR):/src -w /src --privileged untar gdb ./untar
