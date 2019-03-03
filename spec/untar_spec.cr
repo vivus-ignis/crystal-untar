@@ -18,16 +18,10 @@ describe Untar do
   end
 
   it "extracts from a tar file to an existing directory" do
-    res = Untar.extract(from_file: TEST_ARCHIVE,
-                        to_directory: TEST_DIR)
-    res.should be_nil
-  end
-
-  it "extracts from a tar file to an existing directory" do
-    res = Untar.extract(from_file: TEST_ARCHIVE,
-                        to_directory: TEST_DIR)
-    File.exists? ".test/doc/th_read.3"
-    File.exists? ".test/doc/Makefile.in"
+    Untar.extract(from_file: TEST_ARCHIVE,
+                  to_directory: TEST_DIR)
+    File.exists?(".test/doc/th_read.3").should be_true
+    File.exists?(".test/doc/Makefile.in").should be_true
     Dir.entries(".test/doc")
       .reject { |f| f == "." || f == ".."}
       .size
@@ -35,26 +29,27 @@ describe Untar do
   end
 
   it "returns an error when extracting from a tar file to a non-existing directory" do
-    res = Untar.extract(from_file: TEST_ARCHIVE,
-                        to_directory: ".non-existent")
-    res.should be_a(Untar::Error)
+    expect_raises(UntarException) do
+      Untar.extract(from_file: TEST_ARCHIVE,
+                    to_directory: ".non-existent")
+    end
   end
 
   it "returns an error when extracting a gzipped tar file" do
-    res = Untar.extract(from_file: GZIPPED_ARCHIVE,
-                        to_directory: TEST_DIR)
-    res.should be_a(Untar::Error)
+    expect_raises(UntarException) do
+      Untar.extract(from_file: GZIPPED_ARCHIVE,
+                    to_directory: TEST_DIR)
+    end
   end
 
   it "extracts from memory to an existing directory" do
-    mem = IO::Memory.new
-    mem << File.read(TEST_ARCHIVE)
-    res = Untar.extract(from_memory: mem,
-                        to_directory: TEST_DIR)
+    mem = IO::Memory.new(File.read(TEST_ARCHIVE))
 
-    res.should be_nil
-    File.exists? ".test/doc/th_read.3"
-    File.exists? ".test/doc/Makefile.in"
+    Untar.extract(from_memory: mem,
+                  to_directory: TEST_DIR)
+
+    File.exists?(".test/doc/th_read.3").should be_true
+    File.exists?(".test/doc/Makefile.in").should be_true
     Dir.entries(".test/doc")
       .reject { |f| f == "." || f == ".."}
       .size
@@ -62,8 +57,8 @@ describe Untar do
   end
 
   it "extracts particular file from memory to memory" do
-    mem = IO::Memory.new
-    mem << File.read(TEST_ARCHIVE)
+    mem = IO::Memory.new(File.read(TEST_ARCHIVE))
+
     res = Untar.extract_file(from_memory: mem,
                              file_path: "doc/tar_open.3")
 
@@ -72,12 +67,12 @@ describe Untar do
   end
 
   it "extracts nonexistent file from memory returns an error" do
-    mem = IO::Memory.new
-    mem << File.read(TEST_ARCHIVE)
-    res = Untar.extract_file(from_memory: mem,
-                             file_path: "doc/nonexistent")
+    mem = IO::Memory.new(File.read(TEST_ARCHIVE))
 
-    res.should be_a(Untar::Error)
+    expect_raises(UntarException) do
+      Untar.extract_file(from_memory: mem,
+                         file_path: "doc/nonexistent")
+    end
   end
 
 end

@@ -28,8 +28,7 @@ files from a tar archive on disk:
 require "untar"
 
 Dir.mkdir "/tmp/archive"
-res = Untar.extract("archive.tar", "/tmp/archive")
-puts "There was an error unpacking archive: #{res}" unless res.nil?
+Untar.extract("archive.tar", "/tmp/archive")
 ```
 
 The other option is to extract files from an archive that is loaded in
@@ -47,8 +46,7 @@ unzipped = Gzip::Reader.open(zipped) { |gzip| gzip.gets_to_end }
 tarball = IO::Memory.new(unzipped)
 
 Dir.mkdir "/tmp/nginx"
-res = Untar.extract(tarball, "/tmp/nginx")
-puts "There was an error unpacking archive: #{res}" unless res.nil?
+Untar.extract(tarball, "/tmp/nginx")
 ```
 
 Notice that the same `Untar.extract` method is used to unpack a
@@ -66,20 +64,15 @@ response = HTTP::Client.get "https://nginx.org/download/nginx-1.15.9.tar.gz"
 zipped = IO::Memory.new(response.body)
 unzipped = Gzip::Reader.open(zipped) { |gzip| gzip.gets_to_end }
 tarball = IO::Memory.new(unzipped)
-res = Untar.extract_file(tarball, "nginx-1.15.9/CHANGES")
-puts "There was an error unpacking archive: #{res}" unless res.is_a?(IO)
+
+changelog = Untar.extract_file(tarball, "nginx-1.15.9/CHANGES")
 
 puts changelog
 ```
 
 ### Error handling
 
-The approach is simple: if something went wrong during execution, an
-error object is returned. For a side-effect-only `Untar.extract`
-method, successful call results in a `nil` value. `Untar.extract_file`
-returns an extracted file as an `IO` object when no errors occured.
-
-Error object can be stringified for more details on what has happened.
+On errors `Untar` raises an `UntarException`.
 
 ## Contributing
 
@@ -91,4 +84,4 @@ Error object can be stringified for more details on what has happened.
 
 ## Contributors
 
-- [Vivus Ignis](https://github.com/vivus-ignis) - creator and maintainer
+- [Yaroslav Tarasenko](https://github.com/vivus-ignis) - creator and maintainer
